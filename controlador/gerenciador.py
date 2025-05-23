@@ -36,7 +36,7 @@ class GerenciadorDeTarefas:
         elif filtro == 'concluidas':
             self.cursor.execute("SELECT * FROM tarefas WHERE concluida = 1 ORDER BY datetime(criado_em) DESC")
            
-        print(self.cursor.fetchall())
+        return self.cursor.fetchall()
     
 
     # Recurso para marcar tarefa como concluida      
