@@ -35,8 +35,8 @@ class GerenciadorDeTarefas:
             
         elif filtro == 'concluidas':
             self.cursor.execute("SELECT * FROM tarefas WHERE concluida = 1 ORDER BY datetime(criado_em) DESC")
-            
-        return self.cursor.fetchall()
+           
+        print(self.cursor.fetchall())
     
 
     # Recurso para marcar tarefa como concluida      
@@ -62,6 +62,6 @@ class GerenciadorDeTarefas:
             self.con.commit()
         
            
-    # Recurso para fechar a conexã ocom o banco de dados     
+    # Recurso para fechar a conexão com o banco de dados     
     def fechar(self):
         self.con.close()
