@@ -22,7 +22,6 @@ class GerenciadorDeTarefas:
         except Exception as e:
             print(f"Ocorreu um erro: {e}")
             self.con.rollback()
-            self.con.commit()      
         
         
     # Recurso para listar as tarefas    
@@ -47,20 +46,43 @@ class GerenciadorDeTarefas:
         except Exception as e:
             print(f"Ocorreu um erro: {e}")
             self.con.rollback()
-            self.con.commit()
         
 
     # Recurso para excluir tarefa        
     def excluir_tarefa(self, id: int):
-        try:
-            self.cursor.execute("DELETE FROM tarefas WHERE id=?", (id,))
-            print(f'Tarefa com  ID: {id} excluido com sucesso')
-            self.con.commit()
-        except Exception as e:
-            print(f"Ocorreu um erro: {e}")
-            self.con.rollback()            
-            self.con.commit()
+        lista = self.listar_tarefa('todas')
+        if any(t[0] == id for t in lista):
+            
+            try:
+                self.cursor.execute("DELETE FROM tarefas WHERE id=?", (id,))
+                print(f'Tarefa com  ID: {id} excluido com sucesso')
+                self.con.commit()
+            except Exception as e:
+                print(f"Ocorreu um erro: {e}")
+                self.con.rollback()            
+    
         
+    # Recurso para atualizar tarefa
+    def atualizar_tarefa(self, id, titulo, descricao, previsao_termino, concluida):
+        lista = self.listar_tarefa('todas')
+        if any(t[0] == id for t in lista):
+            
+            try:
+                self.cursor.execute("""
+                                    UPDATE tarefas 
+                                    SET titulo = ?, descricao = ?, previsao_termino = ?, concluida = ?
+                                    WHERE id = ?
+                                    """, (titulo, descricao, previsao_termino, concluida, id)
+                                    )           
+                print(f'Tarefa {titulo} atualizada com sucesso')
+                self.con.commit()
+            except Exception as e:
+                print(f"Ocorreu um erro: {e}")
+                self.con.rollback()
+                
+        else:
+            print(f"Nenhuma tarefa encontrada com ID {id}.")
+  
            
     # Recurso para fechar a conexão com o banco de dados     
     def fechar(self):
